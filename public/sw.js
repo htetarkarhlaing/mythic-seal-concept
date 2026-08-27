@@ -1,4 +1,4 @@
-const CACHE_NAME = "mythic-seal-v1";
+const CACHE_NAME = "mythic-seal-v2";
 const STATIC_ASSETS = [
   "/",
   "/roster",
@@ -38,15 +38,22 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
 
+  const url = event.request.url;
+  // Ignore non-http requests (e.g. chrome-extension://, moz-extension://)
+  if (!url.startsWith("http://") && !url.startsWith("https://")) {
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       if (cachedResponse) {
         // Return cache but update in background (Stale-While-Revalidate)
         fetch(event.request)
           .then((networkResponse) => {
-            if (networkResponse && networkResponse.status === 200) {
+            if (networkResponse && networkResponse.status === 200 && networkResponse.type === "basic") {
+              const responseToCache = networkResponse.clone();
               caches.open(CACHE_NAME).then((cache) => {
-                cache.put(event.request, networkResponse);
+                cache.put(event.request, responseToCache);
               });
             }
           })
