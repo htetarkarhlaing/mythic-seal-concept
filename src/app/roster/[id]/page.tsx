@@ -157,6 +157,44 @@ export default async function PlayerDossierPage({ params }: PlayerPageProps) {
                 </div>
               </div>
 
+              {/* Tournament Performance Stats Grid */}
+              {player.stats && (
+                <div className="p-5 rounded-sm bg-[#050b1d] border border-slate-800/90 space-y-4">
+                  <span className="text-xs font-mono font-bold text-[#FFC107] uppercase tracking-widest block">
+                    {"// TOURNAMENT METRICS (MSL & GEG 2026)"}
+                  </span>
+
+                  <div className="grid grid-cols-3 gap-3 text-center">
+                    <div className="p-3 bg-black/40 rounded border border-slate-800">
+                      <span className="text-[10px] text-slate-400 font-bold block uppercase">SEASON KDA</span>
+                      <span className="text-lg font-black text-white font-mono">{player.stats.kda}</span>
+                    </div>
+                    <div className="p-3 bg-black/40 rounded border border-slate-800">
+                      <span className="text-[10px] text-slate-400 font-bold block uppercase">WIN RATE</span>
+                      <span className="text-lg font-black text-emerald-400 font-mono">{player.stats.winRate}</span>
+                    </div>
+                    <div className="p-3 bg-black/40 rounded border border-slate-800">
+                      <span className="text-[10px] text-slate-400 font-bold block uppercase">MVPS</span>
+                      <span className="text-lg font-black text-[#FFC107] font-mono">{player.stats.mvpCount}</span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <span className="text-[11px] text-slate-400 font-bold uppercase block mb-2">SIGNATURE HERO POOL:</span>
+                    <div className="flex flex-wrap gap-2">
+                      {player.stats.signatureHeroes.map((hero) => (
+                        <span
+                          key={hero}
+                          className="px-2.5 py-1 text-xs font-bold text-slate-200 bg-slate-900 rounded border border-amber-500/30"
+                        >
+                          ⚔️ {hero}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* Player Speech / Personal Quote */}
               <div className="p-6 sm:p-7 rounded-sm bg-[#050b1d] border border-amber-500/60 relative space-y-3 shadow-xl">
                 <div className="flex items-center gap-2 text-xs font-bold text-[#FFC107] uppercase tracking-wider">
