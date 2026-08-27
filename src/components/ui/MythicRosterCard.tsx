@@ -9,6 +9,7 @@ interface MythicRosterCardProps {
   role: string;
   image: string;
   number?: string;
+  priority?: boolean;
   onClick?: () => void;
   className?: string;
 }
@@ -17,6 +18,7 @@ export default function MythicRosterCard({
   name,
   role,
   image,
+  priority = false,
   onClick,
   className = "",
 }: MythicRosterCardProps) {
@@ -38,6 +40,7 @@ export default function MythicRosterCard({
           src={image}
           alt={name}
           fill
+          priority={priority}
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
           className="object-cover object-top group-hover:scale-105 transition-transform duration-500"
         />

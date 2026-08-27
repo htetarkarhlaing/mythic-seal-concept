@@ -74,7 +74,7 @@ export default function RosterPage() {
         {/* Player Cards Grid */}
         <section className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6">
-            {filteredPlayers.map((player) => (
+            {filteredPlayers.map((player, index) => (
               <Link key={player.id} href={`/roster/${player.id}`} className="block">
                 <MythicRosterCard
                   id={player.id}
@@ -82,6 +82,7 @@ export default function RosterPage() {
                   role={player.role}
                   image={player.image}
                   number={player.number}
+                  priority={index < 2}
                 />
               </Link>
             ))}

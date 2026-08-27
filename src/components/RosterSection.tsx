@@ -23,7 +23,7 @@ export default function RosterSection() {
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6">
-        {ROSTER.map((player) => (
+        {ROSTER.map((player, index) => (
           <TiltCard key={player.id} maxTilt={10} scale={1.04} className="h-full">
             <Link href={`/roster/${player.id}`} className="block h-full">
               <MythicRosterCard
@@ -31,6 +31,7 @@ export default function RosterSection() {
                 name={player.name}
                 role={player.role}
                 image={player.image}
+                priority={index < 2}
               />
             </Link>
           </TiltCard>
