@@ -6,6 +6,7 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Calendar, Clock, Play, Trophy } from "lucide-react";
+import { cyberAudio } from "@/lib/audioSynthesizer";
 
 interface Match {
   id: string;
@@ -136,7 +137,10 @@ export default function MatchesPage() {
               {(["ALL", "UPCOMING", "RESULTS", "STANDINGS"] as const).map((tab) => (
                 <button
                   key={tab}
-                  onClick={() => setActiveTab(tab)}
+                  onClick={() => {
+                    cyberAudio.playClick();
+                    setActiveTab(tab);
+                  }}
                   className={`px-5 py-2 text-xs font-bold uppercase tracking-wider rounded-sm transition-all cursor-pointer ${
                     activeTab === tab
                       ? "bg-[#FFC107] text-black shadow-[0_0_15px_rgba(255,193,7,0.5)] scale-105"

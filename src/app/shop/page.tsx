@@ -19,6 +19,7 @@ import { useCart } from "@/context/CartContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { JerseyCustomizerPreview } from "@/components/shop/JerseyCustomizerPreview";
+import { cyberAudio } from "@/lib/audioSynthesizer";
 
 export default function ShopPage() {
   const { addItem, totalCount, setIsCartOpen } = useCart();
@@ -57,12 +58,14 @@ export default function ShopPage() {
 
   const handleAddToCart = (product: ShopProduct, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
+    cyberAudio.playSuccess();
     const size = product.sizes ? product.sizes[0] : "STANDARD";
-    if (product.id === "jersey-custom-pro") {
+    if (product.id === "jersey-player-custom" || product.id === "jersey-custom-pro") {
       addItem(product, size, 1, customName.toUpperCase(), customNumber);
     } else {
       addItem(product, size, 1);
     }
+    setIsCartOpen(true);
   };
 
   return (

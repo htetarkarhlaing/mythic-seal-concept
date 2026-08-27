@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import MythicRosterCard from "@/components/ui/MythicRosterCard";
 import { ROSTER } from "@/data/roster";
 import { Shield, Target, Users, ArrowRight } from "lucide-react";
+import { cyberAudio } from "@/lib/audioSynthesizer";
 
 export default function RosterPage() {
   const [activeRole, setActiveRole] = useState<string>("ALL");
@@ -56,7 +57,10 @@ export default function RosterPage() {
               {roles.map((role) => (
                 <button
                   key={role}
-                  onClick={() => setActiveRole(role)}
+                  onClick={() => {
+                    cyberAudio.playClick();
+                    setActiveRole(role);
+                  }}
                   className={`px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-sm transition-all cursor-pointer ${
                     activeRole === role
                       ? "bg-[#FFC107] text-black shadow-[0_0_15px_rgba(255,193,7,0.5)] scale-105"

@@ -12,17 +12,8 @@ import { CartItemList } from "./cart/CartItemList";
 import { CartPromoSection } from "./cart/CartPromoSection";
 import { CartSummary } from "./cart/CartSummary";
 import { CartCheckoutFlow } from "./cart/CartCheckoutFlow";
+import { cyberAudio } from "@/lib/audioSynthesizer";
 
-/**
- * CartDrawer Component
- *
- * Fully accessible shopping cart drawer built on top of `@radix-ui/react-dialog`.
- *
- * Key Engineering Standards:
- * - WAI-ARIA compliant modal with automated focus management and keyboard trapping
- * - Zero layout thrashing: uses Zustand selector subscriptions to minimize re-renders
- * - Domain decomposed architecture: split across atomic subcomponents
- */
 export default function CartDrawer() {
   const isCartOpen = useCartStore((state) => state.isCartOpen);
   const setIsCartOpen = useCartStore((state) => state.setIsCartOpen);
@@ -41,13 +32,23 @@ export default function CartDrawer() {
   const [isCheckingOut, setIsCheckingOut] = useState(false);
 
   const handleOrderSuccess = () => {
+    cyberAudio.playSuccess();
     clearCart();
     setIsCheckingOut(false);
     setIsCartOpen(false);
   };
 
+  const handleOpenChange = (open: boolean) => {
+    if (open) {
+      cyberAudio.playDrawer();
+    } else {
+      cyberAudio.playClick();
+    }
+    setIsCartOpen(open);
+  };
+
   return (
-    <Dialog.Root open={isCartOpen} onOpenChange={setIsCartOpen}>
+    <Dialog.Root open={isCartOpen} onOpenChange={handleOpenChange}>
       <Dialog.Portal>
         {/* Accessible Backdrop Overlay */}
         <Dialog.Overlay className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 transition-opacity" />

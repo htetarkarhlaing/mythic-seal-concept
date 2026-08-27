@@ -4,8 +4,27 @@ import { useAppStore } from "@/store/useAppStore";
 
 class CyberAudioSynthesizer {
   private ctx: AudioContext | null = null;
+  private isUnlocked: boolean = false;
 
-  private getContext(): AudioContext | null {
+  constructor() {
+    if (typeof window !== "undefined") {
+      const unlockAudio = () => {
+        if (!this.ctx) {
+          this.initContext();
+        } else if (this.ctx.state === "suspended") {
+          this.ctx.resume();
+        }
+        this.isUnlocked = true;
+        window.removeEventListener("pointerdown", unlockAudio);
+        window.removeEventListener("keydown", unlockAudio);
+      };
+
+      window.addEventListener("pointerdown", unlockAudio, { once: true });
+      window.addEventListener("keydown", unlockAudio, { once: true });
+    }
+  }
+
+  private initContext(): AudioContext | null {
     if (typeof window === "undefined") return null;
     if (!this.ctx) {
       const AudioContextClass =
@@ -16,10 +35,15 @@ class CyberAudioSynthesizer {
         this.ctx = new AudioContextClass();
       }
     }
-    if (this.ctx && this.ctx.state === "suspended") {
-      this.ctx.resume();
-    }
     return this.ctx;
+  }
+
+  private getContext(): AudioContext | null {
+    const ctx = this.initContext();
+    if (ctx && ctx.state === "suspended") {
+      ctx.resume().catch(() => {});
+    }
+    return ctx;
   }
 
   private isEnabled(): boolean {
@@ -32,23 +56,24 @@ class CyberAudioSynthesizer {
     if (!ctx) return;
 
     try {
+      const now = ctx.currentTime;
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
 
       osc.type = "sine";
-      osc.frequency.setValueAtTime(800, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.04);
+      osc.frequency.setValueAtTime(640, now);
+      osc.frequency.exponentialRampToValueAtTime(1020, now + 0.05);
 
-      gain.gain.setValueAtTime(0.03, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
+      gain.gain.setValueAtTime(0.12, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
 
       osc.connect(gain);
       gain.connect(ctx.destination);
 
-      osc.start(ctx.currentTime);
-      osc.stop(ctx.currentTime + 0.04);
+      osc.start(now);
+      osc.stop(now + 0.05);
     } catch {
-      // Ignore audio synthesis errors on unsupported browsers
+      // Ignore audio synthesis errors
     }
   }
 
@@ -58,21 +83,22 @@ class CyberAudioSynthesizer {
     if (!ctx) return;
 
     try {
+      const now = ctx.currentTime;
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
 
       osc.type = "triangle";
-      osc.frequency.setValueAtTime(320, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(160, ctx.currentTime + 0.06);
+      osc.frequency.setValueAtTime(420, now);
+      osc.frequency.exponentialRampToValueAtTime(180, now + 0.08);
 
-      gain.gain.setValueAtTime(0.08, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.06);
+      gain.gain.setValueAtTime(0.25, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
 
       osc.connect(gain);
       gain.connect(ctx.destination);
 
-      osc.start(ctx.currentTime);
-      osc.stop(ctx.currentTime + 0.06);
+      osc.start(now);
+      osc.stop(now + 0.08);
     } catch {
       // Ignore audio synthesis errors
     }
@@ -92,16 +118,16 @@ class CyberAudioSynthesizer {
         const gain = ctx.createGain();
 
         osc.type = "sine";
-        osc.frequency.setValueAtTime(freq, now + idx * 0.06);
+        osc.frequency.setValueAtTime(freq, now + idx * 0.07);
 
-        gain.gain.setValueAtTime(0.06, now + idx * 0.06);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.06 + 0.12);
+        gain.gain.setValueAtTime(0.22, now + idx * 0.07);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.07 + 0.14);
 
         osc.connect(gain);
         gain.connect(ctx.destination);
 
-        osc.start(now + idx * 0.06);
-        osc.stop(now + idx * 0.06 + 0.12);
+        osc.start(now + idx * 0.07);
+        osc.stop(now + idx * 0.07 + 0.14);
       });
     } catch {
       // Ignore audio synthesis errors
@@ -114,21 +140,22 @@ class CyberAudioSynthesizer {
     if (!ctx) return;
 
     try {
+      const now = ctx.currentTime;
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
 
       osc.type = "sine";
-      osc.frequency.setValueAtTime(220, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(580, ctx.currentTime + 0.08);
+      osc.frequency.setValueAtTime(260, now);
+      osc.frequency.exponentialRampToValueAtTime(680, now + 0.09);
 
-      gain.gain.setValueAtTime(0.05, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+      gain.gain.setValueAtTime(0.18, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
 
       osc.connect(gain);
       gain.connect(ctx.destination);
 
-      osc.start(ctx.currentTime);
-      osc.stop(ctx.currentTime + 0.08);
+      osc.start(now);
+      osc.stop(now + 0.09);
     } catch {
       // Ignore audio synthesis errors
     }

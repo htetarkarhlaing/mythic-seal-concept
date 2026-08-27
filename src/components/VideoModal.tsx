@@ -3,6 +3,7 @@
 import React from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { X, Play } from "lucide-react";
+import { cyberAudio } from "@/lib/audioSynthesizer";
 
 interface VideoModalProps {
   isOpen: boolean;
@@ -10,8 +11,17 @@ interface VideoModalProps {
 }
 
 export default function VideoModal({ isOpen, onClose }: VideoModalProps) {
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      cyberAudio.playClick();
+      onClose();
+    } else {
+      cyberAudio.playDrawer();
+    }
+  };
+
   return (
-    <Dialog.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
+    <Dialog.Root open={isOpen} onOpenChange={handleOpenChange}>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
         <Dialog.Content className="fixed left-[50%] top-[50%] z-50 w-[94vw] max-w-4xl translate-x-[-50%] translate-y-[-50%] bg-[#060c22] border-2 border-amber-500/60 rounded-xl overflow-hidden shadow-[0_0_60px_rgba(245,158,11,0.4)] flex flex-col focus:outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95">

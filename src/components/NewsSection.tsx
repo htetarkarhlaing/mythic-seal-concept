@@ -7,7 +7,7 @@ import { ArrowRight } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import { NEWS_ARTICLES } from "@/data/news";
+import { useLatestNewsQuery } from "@/queries/newsQueries";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 
 if (typeof window !== "undefined") {
@@ -17,26 +17,34 @@ if (typeof window !== "undefined") {
 export default function NewsSection() {
   const containerRef = useRef<HTMLElement | null>(null);
   const prefersReducedMotion = useReducedMotion();
+  const { data: articles } = useLatestNewsQuery(3);
 
   useGSAP(
     () => {
-      if (prefersReducedMotion || !containerRef.current) return;
+      if (prefersReducedMotion || !containerRef.current || !articles?.length) return;
 
-      gsap.from(".news-card", {
-        opacity: 0,
-        y: 40,
-        duration: 0.8,
-        stagger: 0.15,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top 80%",
-          toggleActions: "play none none none",
-        },
-      });
+      gsap.fromTo(
+        ".news-card",
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          stagger: 0.12,
+          ease: "power2.out",
+          clearProps: "all",
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: "top 85%",
+            toggleActions: "play none none none",
+          },
+        }
+      );
     },
-    { scope: containerRef, dependencies: [prefersReducedMotion] }
+    { scope: containerRef, dependencies: [prefersReducedMotion, articles] }
   );
+
+  const displayArticles = articles && articles.length > 0 ? articles : [];
 
   return (
     <section
@@ -61,9 +69,9 @@ export default function NewsSection() {
         </Link>
       </div>
 
-      {/* News Cards Grid with GSAP Entrance */}
+      {/* News Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {NEWS_ARTICLES.slice(0, 3).map((item) => (
+        {displayArticles.map((item, index) => (
           <Link
             key={item.id}
             href={`/news/${item.id}`}
@@ -76,6 +84,7 @@ export default function NewsSection() {
                   src={item.image}
                   alt={item.title}
                   fill
+                  priority={index === 0}
                   sizes="(max-width: 768px) 100vw, 33vw"
                   className="object-cover group-hover:scale-105 transition-transform duration-300"
                 />
