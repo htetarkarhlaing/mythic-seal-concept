@@ -51,27 +51,34 @@ export default function CartDrawer() {
     <Dialog.Root open={isCartOpen} onOpenChange={handleOpenChange}>
       <Dialog.Portal>
         {/* Accessible Backdrop Overlay */}
-        <Dialog.Overlay className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 transition-opacity" />
+        <Dialog.Overlay className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 transition-opacity" />
 
         {/* Accessible Drawer Content with Focus Trap */}
         <Dialog.Content
           aria-describedby="cart-drawer-description"
-          className="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-[#050b1d] border-l border-amber-500/40 text-white shadow-2xl flex flex-col focus:outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right duration-300"
+          className="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-[#050b1e] border-l border-slate-800 text-white shadow-2xl flex flex-col focus:outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right duration-300 font-['Rajdhani',sans-serif]"
         >
           {/* Header Section */}
-          <div className="p-4 border-b border-slate-800 bg-[#030717] flex items-center justify-between flex-shrink-0">
+          <div className="px-5 py-4 border-b border-slate-800 bg-[#030717] flex items-center justify-between flex-shrink-0">
             <div className="flex items-center gap-2.5">
-              <ShoppingBag className="w-5 h-5 text-amber-400" />
-              <Dialog.Title className="font-['Rajdhani',sans-serif] text-sm font-black uppercase tracking-wider text-white">
-                MYTHIC SEAL GEAR ({items.length})
-              </Dialog.Title>
+              <div className="w-8 h-8 rounded bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                <ShoppingBag className="w-4 h-4" />
+              </div>
+              <div>
+                <Dialog.Title className="text-sm font-black uppercase tracking-wider text-white">
+                  SHOPPING BAG
+                </Dialog.Title>
+                <span className="text-[10px] text-slate-400 font-mono block">
+                  {items.length} {items.length === 1 ? "ITEM" : "ITEMS"} IN CART
+                </span>
+              </div>
             </div>
 
             <Dialog.Close
               aria-label="Close cart drawer"
-              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors focus-visible:ring-2 focus-visible:ring-amber-400"
+              className="p-2 rounded text-slate-400 hover:text-white hover:bg-slate-800/80 transition-colors focus-visible:ring-2 focus-visible:ring-amber-400 cursor-pointer"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4" />
             </Dialog.Close>
           </div>
 

@@ -19,7 +19,16 @@ import { useCart } from "@/context/CartContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { JerseyCustomizerPreview } from "@/components/shop/JerseyCustomizerPreview";
+import { TiltCard } from "@/components/ui/TiltCard";
 import { cyberAudio } from "@/lib/audioSynthesizer";
+
+const ROSTER_PRESETS = [
+  { ign: "GALAXY", num: "07", role: "EXP" },
+  { ign: "JUSTIN", num: "11", role: "JUNGLE" },
+  { ign: "KENN", num: "23", role: "MID" },
+  { ign: "ZIPPY", num: "09", role: "GOLD" },
+  { ign: "NAOMI", num: "01", role: "ROAM" },
+];
 
 export default function ShopPage() {
   const { addItem, totalCount, setIsCartOpen } = useCart();
@@ -32,6 +41,7 @@ export default function ShopPage() {
   // Customizer state for hero jersey
   const [customName, setCustomName] = useState("GALAXY");
   const [customNumber, setCustomNumber] = useState("07");
+  const [customSize, setCustomSize] = useState("L");
 
   const categories = [
     { id: "ALL", label: "ALL GEAR" },
@@ -61,77 +71,113 @@ export default function ShopPage() {
     cyberAudio.playSuccess();
     const size = product.sizes ? product.sizes[0] : "STANDARD";
     if (product.id === "jersey-player-custom" || product.id === "jersey-custom-pro") {
-      addItem(product, size, 1, customName.toUpperCase(), customNumber);
+      addItem(product, customSize, 1, customName.toUpperCase(), customNumber);
     } else {
       addItem(product, size, 1);
     }
     setIsCartOpen(true);
   };
 
+  const handleApplyPreset = (preset: { ign: string; num: string }) => {
+    cyberAudio.playClick();
+    setCustomName(preset.ign);
+    setCustomNumber(preset.num);
+  };
+
   return (
     <div className="min-h-screen bg-[#060a1a] text-white flex flex-col font-['Rajdhani',sans-serif]">
-      {/* Top Fixed Navbar */}
       <Navbar />
 
       <main className="flex-grow pt-28 sm:pt-32 pb-16">
         
-        {/* Breadcrumbs & Cart Status Bar (Properly spaced clear of 80px Navbar) */}
+        {/* Top Header & Cart Action Bar */}
         <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 mb-6">
-          <div className="flex items-center justify-between text-xs text-slate-400">
+          <div className="flex items-center justify-between pb-4 border-b border-slate-800 text-xs text-slate-400">
             <div className="flex items-center gap-2">
               <Link href="/" className="hover:text-[#FFC107] transition-colors">
                 HOME
               </Link>
               <span>/</span>
-              <span className="text-[#FFC107] font-bold">OFFICIAL STORE</span>
+              <span className="text-[#FFC107] font-bold">MYTHIC ARMORY & MERCHANDISE</span>
             </div>
 
             <button
-              onClick={() => setIsCartOpen(true)}
+              onClick={() => {
+                cyberAudio.playDrawer();
+                setIsCartOpen(true);
+              }}
               className="flex items-center gap-2.5 px-4 py-2 rounded-sm bg-[#081026] border border-amber-500/60 hover:border-amber-400 text-white font-bold transition-all shadow-[0_0_15px_rgba(255,193,7,0.25)] cursor-pointer"
             >
               <ShoppingBag className="w-4 h-4 text-[#FFC107]" />
-              <span className="text-xs uppercase tracking-wider">VIEW CART</span>
-              <span className="bg-[#FFC107] text-black text-xs font-black px-2 py-0.2 rounded-full">
+              <span className="text-xs uppercase tracking-wider">MY CART</span>
+              <span className="bg-[#FFC107] text-black text-xs font-black px-2 py-0.5 rounded-full">
                 {totalCount}
               </span>
             </button>
           </div>
         </div>
 
-        {/* 1. Sci-Fi Pro Jersey Interactive Customizer Banner */}
-        <section className="relative pb-10 sm:pb-14 border-b border-slate-800/80 overflow-hidden bg-gradient-to-b from-[#091232]/60 to-transparent">
+        {/* 1. Premier Interactive Jersey Customization Studio */}
+        <section className="relative pb-10 sm:pb-14 border-b border-slate-800/80 overflow-hidden bg-gradient-to-b from-[#091232]/80 to-transparent">
           <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
 
-            {/* Sci-Fi Interactive Customizer Box */}
             <div
-              className="p-6 sm:p-10 bg-[#050b1d] border-2 border-amber-500/70 rounded-sm shadow-[0_0_40px_rgba(255,193,7,0.25)] relative overflow-hidden"
+              className="p-6 sm:p-10 bg-[#050b1d] border-2 border-amber-500/80 rounded-sm shadow-[0_0_50px_rgba(255,193,7,0.2)] relative overflow-hidden"
               style={{
                 clipPath:
                   "polygon(0 16px, 16px 0, calc(100% - 16px) 0, 100% 16px, 100% calc(100% - 16px), calc(100% - 16px) 100%, 16px 100%, 0 calc(100% - 16px))",
               }}
             >
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
                 
                 {/* Left: Customizer Controls */}
                 <div className="lg:col-span-7 space-y-5">
-                  <span className="font-mono text-xs font-bold text-[#FFC107] uppercase tracking-[0.25em] block">
-                    {"// 2026 OFFICIAL PRO KIT CUSTOMIZER"}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-xs font-bold text-[#FFC107] uppercase tracking-[0.25em] block">
+                      {"// 2026 OFFICIAL TOURNAMENT ARMORY"}
+                    </span>
+                    <span className="text-[10px] font-bold text-cyan-400 px-2 py-0.5 rounded bg-cyan-950/80 border border-cyan-500/40 uppercase">
+                      PRO EDITION
+                    </span>
+                  </div>
 
                   <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white leading-tight uppercase tracking-tight">
                     CUSTOMIZE YOUR <span className="text-[#FFC107]">PRO JERSEY</span>
                   </h1>
 
                   <p className="text-slate-300 text-xs sm:text-sm leading-relaxed max-w-xl font-medium">
-                    Wear the official colors of Myanmar’s champion MLBB roster. Enter your custom player gamer tag and jersey number with metallic gold tournament lettering.
+                    Wear the official colors of Myanmar’s championship MLBB roster. Personalize with your custom gamer tag and squad number in metallic gold tournament lettering.
                   </p>
 
-                  {/* Interactive Inputs */}
-                  <div className="flex flex-wrap items-center gap-3 pt-2">
-                    <div className="flex flex-col">
+                  {/* Athlete Preset Quick-Selectors */}
+                  <div className="space-y-2 pt-1">
+                    <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider block">
+                      LOAD ATHLETE PRESET:
+                    </span>
+                    <div className="flex flex-wrap gap-2">
+                      {ROSTER_PRESETS.map((preset) => (
+                        <button
+                          key={preset.ign}
+                          onClick={() => handleApplyPreset(preset)}
+                          className={`px-3 py-1 text-xs font-bold font-mono uppercase rounded-sm border transition-all cursor-pointer ${
+                            customName === preset.ign && customNumber === preset.num
+                              ? "bg-[#FFC107] text-black border-[#FFC107] shadow-[0_0_12px_rgba(255,193,7,0.6)]"
+                              : "bg-[#081026] text-slate-300 border-slate-700 hover:border-amber-400 hover:text-white"
+                          }`}
+                        >
+                          #{preset.num} {preset.ign} ({preset.role})
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Interactive Custom Inputs */}
+                  <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 pt-2">
+                    
+                    {/* IGN Input */}
+                    <div className="sm:col-span-5 flex flex-col">
                       <span className="text-[10px] text-slate-400 font-bold uppercase mb-1">
-                        PLAYER IGN / GAMER TAG:
+                        PLAYER GAMER TAG:
                       </span>
                       <input
                         type="text"
@@ -143,7 +189,8 @@ export default function ShopPage() {
                       />
                     </div>
 
-                    <div className="flex flex-col">
+                    {/* Number Input */}
+                    <div className="sm:col-span-3 flex flex-col">
                       <span className="text-[10px] text-slate-400 font-bold uppercase mb-1">
                         NUMBER:
                       </span>
@@ -153,37 +200,65 @@ export default function ShopPage() {
                         value={customNumber}
                         onChange={(e) => setCustomNumber(e.target.value)}
                         placeholder="07"
-                        className="w-20 bg-[#081026] border border-amber-500/50 rounded-sm px-3.5 py-2.5 text-sm text-[#FFC107] font-bold uppercase font-mono focus:outline-none focus:border-[#FFC107] text-center shadow-inner"
+                        className="bg-[#081026] border border-amber-500/50 rounded-sm px-3.5 py-2.5 text-sm text-[#FFC107] font-bold uppercase font-mono focus:outline-none focus:border-[#FFC107] text-center shadow-inner"
                       />
                     </div>
 
-                    <div className="flex flex-col justify-end pt-5">
-                      <button
-                        onClick={() =>
-                          addItem(
-                            SHOP_PRODUCTS[1],
-                            "L",
-                            1,
-                            customName.toUpperCase(),
-                            customNumber
-                          )
-                        }
-                        className="btn-scifi-primary"
+                    {/* Size Selector */}
+                    <div className="sm:col-span-4 flex flex-col">
+                      <span className="text-[10px] text-slate-400 font-bold uppercase mb-1">
+                        SIZE:
+                      </span>
+                      <select
+                        value={customSize}
+                        onChange={(e) => setCustomSize(e.target.value)}
+                        className="bg-[#081026] border border-amber-500/50 rounded-sm px-3 py-2.5 text-sm text-white font-bold uppercase focus:outline-none focus:border-[#FFC107]"
                       >
-                        <ShoppingBag className="w-4 h-4" />
-                        <span>ORDER CUSTOM (48,000 MMK)</span>
-                      </button>
+                        <option value="S">S (Small)</option>
+                        <option value="M">M (Medium)</option>
+                        <option value="L">L (Large)</option>
+                        <option value="XL">XL (Extra Large)</option>
+                        <option value="2XL">2XL (Double Extra)</option>
+                      </select>
                     </div>
+
+                  </div>
+
+                  {/* Add to Cart CTA */}
+                  <div className="pt-2">
+                    <button
+                      onClick={() => {
+                        cyberAudio.playSuccess();
+                        addItem(
+                          SHOP_PRODUCTS[1],
+                          customSize,
+                          1,
+                          customName.toUpperCase(),
+                          customNumber
+                        );
+                        setIsCartOpen(true);
+                      }}
+                      className="btn-scifi-primary w-full sm:w-auto text-center"
+                    >
+                      <ShoppingBag className="w-4 h-4" />
+                      <span>ORDER CUSTOM JERSEY (48,000 MMK)</span>
+                    </button>
                   </div>
                 </div>
 
-                {/* Right: Live Vector Jersey Customizer Preview */}
-                <div className="lg:col-span-5 relative flex items-center justify-center">
-                  <JerseyCustomizerPreview
-                    customName={customName}
-                    customNumber={customNumber}
-                    className="w-full max-w-sm"
-                  />
+                {/* Right: Live Vector Canvas Studio */}
+                <div className="lg:col-span-5 relative flex items-center justify-center p-4 bg-black/40 rounded border border-slate-800/80 shadow-2xl">
+                  <div className="w-full max-w-sm space-y-3">
+                    <div className="flex items-center justify-between text-xs text-slate-400 font-mono">
+                      <span>{"// LIVE VECTOR PROJECTION"}</span>
+                      <span className="text-emerald-400">● 60 FPS SYNCED</span>
+                    </div>
+                    <JerseyCustomizerPreview
+                      customName={customName}
+                      customNumber={customNumber}
+                      className="w-full"
+                    />
+                  </div>
                 </div>
 
               </div>
@@ -192,40 +267,43 @@ export default function ShopPage() {
           </div>
         </section>
 
-        {/* 2. Trust Badges Row */}
+        {/* 2. Trust Assurance Badges */}
         <section className="py-6 border-b border-slate-800 bg-[#050b1d]/70">
           <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
             <div className="flex items-center justify-center gap-2 text-xs text-slate-300">
               <ShieldCheck className="w-4 h-4 text-[#FFC107]" />
-              <span className="font-bold">100% Authentic Pro Kit</span>
+              <span className="font-bold">100% Authentic Official Kit</span>
             </div>
             <div className="flex items-center justify-center gap-2 text-xs text-slate-300">
               <Truck className="w-4 h-4 text-cyan-400" />
-              <span className="font-bold">Nationwide Myanmar Delivery</span>
+              <span className="font-bold">Fast Nationwide Delivery</span>
             </div>
             <div className="flex items-center justify-center gap-2 text-xs text-slate-300">
               <Sparkles className="w-4 h-4 text-[#FFC107]" />
-              <span className="font-bold">10% Off via KBZ Pay (KBZPAY10)</span>
+              <span className="font-bold">10% Off with KBZPay (KBZPAY10)</span>
             </div>
             <div className="flex items-center justify-center gap-2 text-xs text-slate-300">
               <RotateCcw className="w-4 h-4 text-emerald-400" />
-              <span className="font-bold">Hassle-Free Size Exchange</span>
+              <span className="font-bold">Hassle-Free Size Guarantee</span>
             </div>
           </div>
         </section>
 
-        {/* 3. Sci-Fi Store Catalog & Product Grid */}
+        {/* 3. Merchandise Catalog Grid */}
         <section className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8 py-12">
           
-          {/* Filter Bar */}
+          {/* Header Controls (Categories, Search, Sort) */}
           <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-800">
             
-            {/* Sci-Fi Category Tabs */}
+            {/* Category Tabs */}
             <div className="flex items-center gap-2 overflow-x-auto pb-2 lg:pb-0 scrollbar-none">
               {categories.map((cat) => (
                 <button
                   key={cat.id}
-                  onClick={() => setSelectedCategory(cat.id)}
+                  onClick={() => {
+                    cyberAudio.playClick();
+                    setSelectedCategory(cat.id);
+                  }}
                   className={`px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-sm transition-all cursor-pointer whitespace-nowrap ${
                     selectedCategory === cat.id
                       ? "bg-[#FFC107] text-black shadow-[0_0_15px_rgba(255,193,7,0.4)] scale-105"
@@ -237,7 +315,7 @@ export default function ShopPage() {
               ))}
             </div>
 
-            {/* Search & Sort Controls */}
+            {/* Search & Sort */}
             <div className="flex items-center gap-3">
               <div className="relative flex-1 sm:w-64">
                 <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -252,15 +330,16 @@ export default function ShopPage() {
 
               <select
                 value={sortBy}
-                onChange={(e) =>
+                onChange={(e) => {
+                  cyberAudio.playClick();
                   setSortBy(
                     e.target.value as
                       | "FEATURED"
                       | "LOW_HIGH"
                       | "HIGH_LOW"
                       | "RATING"
-                  )
-                }
+                  );
+                }}
                 className="bg-[#081026] border border-slate-700 rounded-sm px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-[#FFC107]"
               >
                 <option value="FEATURED">Featured</option>
@@ -272,90 +351,98 @@ export default function ShopPage() {
 
           </div>
 
-          {/* Sci-Fi Product Cards Grid */}
+          {/* Product Cards Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredProducts.map((product) => (
-              <div
-                key={product.id}
-                onClick={() => {
-                  setQuickViewProduct(product);
-                  if (product.sizes) setSelectedSize(product.sizes[0]);
-                }}
-                className="group rounded-sm overflow-hidden border border-slate-800/90 hover:border-amber-500/80 bg-[#050b1d] transition-all duration-300 hover:shadow-[0_0_30px_rgba(255,193,7,0.25)] hover:-translate-y-1.5 cursor-pointer flex flex-col justify-between"
-              >
-                <div>
-                  {/* Product Thumbnail */}
-                  <div className="relative w-full aspect-[4/3] overflow-hidden bg-slate-950">
-                    <Image
-                      src={product.image}
-                      alt={product.name}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 33vw"
-                      className="object-cover group-hover:scale-106 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#050b1d] via-transparent to-transparent" />
+              <TiltCard key={product.id} maxTilt={8} scale={1.02} className="h-full">
+                <div
+                  onClick={() => {
+                    cyberAudio.playClick();
+                    setQuickViewProduct(product);
+                    if (product.sizes) setSelectedSize(product.sizes[0]);
+                  }}
+                  className="group h-full rounded-sm overflow-hidden border border-slate-800/90 hover:border-amber-500/80 bg-[#050b1d] transition-all duration-300 hover:shadow-[0_0_30px_rgba(255,193,7,0.25)] cursor-pointer flex flex-col justify-between"
+                >
+                  <div>
+                    {/* Thumbnail */}
+                    <div className="relative w-full aspect-[4/3] overflow-hidden bg-slate-950">
+                      <Image
+                        src={product.image}
+                        alt={product.name}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                        className="object-cover group-hover:scale-106 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#050b1d] via-transparent to-transparent" />
 
-                    {/* Badge */}
-                    {product.badge && (
-                      <div className="absolute top-3 left-3 bg-[#FFC107] text-black font-['Rajdhani',sans-serif] text-[10px] font-black uppercase px-2.5 py-1 rounded shadow">
-                        {product.badge}
+                      {/* Badge */}
+                      {product.badge && (
+                        <div className="absolute top-3 left-3 bg-[#FFC107] text-black font-['Rajdhani',sans-serif] text-[10px] font-black uppercase px-2.5 py-1 rounded shadow">
+                          {product.badge}
+                        </div>
+                      )}
+
+                      {/* Stock indicator */}
+                      <div className="absolute top-3 right-3 bg-black/80 border border-slate-700 text-emerald-400 font-mono text-[9px] font-bold uppercase px-2 py-0.5 rounded shadow flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                        <span>IN STOCK ({product.stockCount})</span>
                       </div>
-                    )}
 
-                    {/* Quick View Button */}
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40">
-                      <span className="px-4 py-2 rounded-sm bg-slate-900 border border-amber-400 text-xs font-bold text-[#FFC107] flex items-center gap-1.5 shadow-lg">
-                        <Eye className="w-3.5 h-3.5" /> QUICK VIEW
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Info */}
-                  <div className="p-5 space-y-3">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="text-cyan-400 font-bold uppercase tracking-wider">
-                        {product.category}
-                      </span>
-                      <div className="flex items-center gap-1 text-amber-400 font-bold">
-                        <Star className="w-3.5 h-3.5 fill-amber-400" />
-                        <span>{product.rating}</span>
-                        <span className="text-slate-500 font-normal">
-                          ({product.reviewCount})
+                      {/* Quick View Button */}
+                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40">
+                        <span className="px-4 py-2 rounded-sm bg-slate-900 border border-amber-400 text-xs font-bold text-[#FFC107] flex items-center gap-1.5 shadow-lg">
+                          <Eye className="w-3.5 h-3.5" /> SPECIFICATIONS
                         </span>
                       </div>
                     </div>
 
-                    <h3 className="text-base font-bold text-white group-hover:text-[#FFC107] transition-colors leading-snug line-clamp-2">
-                      {product.name}
-                    </h3>
-
-                    <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
-                      {product.description}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Bottom Price & Add to Cart */}
-                <div className="p-5 pt-0 flex items-center justify-between border-t border-slate-800/80 mt-4">
-                  <div className="space-y-0.5">
-                    <div className="text-base sm:text-lg font-black text-[#FFC107] font-mono">
-                      {product.price.toLocaleString()} MMK
-                    </div>
-                    {product.originalPrice && (
-                      <div className="text-xs text-slate-500 line-through font-mono">
-                        {product.originalPrice.toLocaleString()} MMK
+                    {/* Details */}
+                    <div className="p-5 space-y-3">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-cyan-400 font-bold uppercase tracking-wider">
+                          {product.category}
+                        </span>
+                        <div className="flex items-center gap-1 text-amber-400 font-bold">
+                          <Star className="w-3.5 h-3.5 fill-amber-400" />
+                          <span>{product.rating}</span>
+                          <span className="text-slate-500 font-normal">
+                            ({product.reviewCount})
+                          </span>
+                        </div>
                       </div>
-                    )}
+
+                      <h3 className="text-base font-bold text-white group-hover:text-[#FFC107] transition-colors leading-snug line-clamp-2 uppercase">
+                        {product.name}
+                      </h3>
+
+                      <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
+                        {product.description}
+                      </p>
+                    </div>
                   </div>
 
-                  <button
-                    onClick={(e) => handleAddToCart(product, e)}
-                    className="btn-scifi-primary !py-2 !px-4 text-xs"
-                  >
-                    <span>ADD TO CART</span>
-                  </button>
+                  {/* Price & Action */}
+                  <div className="p-5 pt-0 flex items-center justify-between border-t border-slate-800/80 mt-4">
+                    <div className="space-y-0.5">
+                      <div className="text-base sm:text-lg font-black text-[#FFC107] font-mono">
+                        {product.price.toLocaleString()} MMK
+                      </div>
+                      {product.originalPrice && (
+                        <div className="text-xs text-slate-500 line-through font-mono">
+                          {product.originalPrice.toLocaleString()} MMK
+                        </div>
+                      )}
+                    </div>
+
+                    <button
+                      onClick={(e) => handleAddToCart(product, e)}
+                      className="btn-scifi-primary !py-2 !px-4 text-xs"
+                    >
+                      <span>ADD TO CART</span>
+                    </button>
+                  </div>
                 </div>
-              </div>
+              </TiltCard>
             ))}
           </div>
 
@@ -368,14 +455,17 @@ export default function ShopPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
           <div className="relative w-full max-w-3xl bg-[#060c22] border-2 border-amber-500/80 rounded-sm overflow-hidden shadow-[0_0_50px_rgba(255,193,7,0.35)] max-h-[90vh] flex flex-col font-['Rajdhani',sans-serif]">
             
-            {/* Header */}
+            {/* Modal Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-amber-500/30 bg-[#040817]">
               <span className="text-xs font-bold text-[#FFC107] uppercase tracking-wider">
-                {quickViewProduct.category} • PRODUCT SPECIFICATION
+                {quickViewProduct.category} • OFFICIAL PRODUCT SPECS
               </span>
 
               <button
-                onClick={() => setQuickViewProduct(null)}
+                onClick={() => {
+                  cyberAudio.playClick();
+                  setQuickViewProduct(null);
+                }}
                 className="p-1.5 rounded bg-slate-900 border border-slate-700 text-slate-400 hover:text-white"
               >
                 ✕
@@ -419,7 +509,10 @@ export default function ShopPage() {
                         {quickViewProduct.sizes.map((s) => (
                           <button
                             key={s}
-                            onClick={() => setSelectedSize(s)}
+                            onClick={() => {
+                              cyberAudio.playClick();
+                              setSelectedSize(s);
+                            }}
                             className={`px-3 py-1.5 rounded-sm text-xs font-bold border transition-colors ${
                               selectedSize === s
                                 ? "bg-[#FFC107] text-black border-[#FFC107]"
@@ -445,8 +538,10 @@ export default function ShopPage() {
 
                   <button
                     onClick={() => {
+                      cyberAudio.playSuccess();
                       addItem(quickViewProduct, selectedSize);
                       setQuickViewProduct(null);
+                      setIsCartOpen(true);
                     }}
                     className="btn-scifi-primary w-full !py-3 mt-2"
                   >
@@ -461,7 +556,6 @@ export default function ShopPage() {
         </div>
       )}
 
-      {/* Footer */}
       <Footer />
     </div>
   );

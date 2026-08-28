@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import { Truck, ArrowRight, ShieldCheck } from "lucide-react";
+import { Truck, ArrowRight, ShieldCheck, CreditCard } from "lucide-react";
+import { cyberAudio } from "@/lib/audioSynthesizer";
 
 interface CartSummaryProps {
   subtotal: number;
@@ -13,14 +14,6 @@ interface CartSummaryProps {
 
 const FREE_SHIPPING_THRESHOLD = 70000;
 
-/**
- * CartSummary Component
- *
- * Renders the order financial breakdown including:
- * - Dynamic free shipping progress tracker
- * - Regional delivery destination selector
- * - Transparent discount and grand total arithmetic
- */
 export function CartSummary({
   subtotal,
   discount,
@@ -28,7 +21,6 @@ export function CartSummary({
   onCityChange,
   onProceedToCheckout,
 }: CartSummaryProps) {
-  // Shipping cost matrix
   const isFreeShipping = subtotal >= FREE_SHIPPING_THRESHOLD;
   const shippingCost = isFreeShipping
     ? 0
@@ -49,71 +41,73 @@ export function CartSummary({
   );
 
   return (
-    <div className="p-4 bg-[#030717] border-t border-slate-800 space-y-4">
-      {/* Free Shipping Progress Meter */}
-      <div className="space-y-1.5 bg-slate-900/80 p-2.5 rounded-lg border border-slate-800">
-        <div className="flex items-center justify-between text-[11px] font-mono">
-          <span className="flex items-center gap-1.5 text-slate-300">
+    <div className="p-5 bg-[#040817] border-t border-slate-800 space-y-4">
+      
+      {/* Refined Free Shipping Progress Bar */}
+      <div className="space-y-1.5 p-3 rounded-lg bg-[#070e24] border border-slate-800/80">
+        <div className="flex items-center justify-between text-xs">
+          <div className="flex items-center gap-1.5 text-slate-300">
             <Truck className="w-3.5 h-3.5 text-amber-400" />
             {isFreeShipping ? (
-              <span className="text-green-400 font-bold">
+              <span className="text-emerald-400 font-bold">
                 QUALIFIED FOR FREE SHIPPING!
               </span>
             ) : (
               <span>
-                Add{" "}
-                <strong className="text-amber-400">
-                  {remainingForFreeShipping.toLocaleString()} MMK
-                </strong>{" "}
-                for Free Delivery
+                Add <strong className="text-amber-400 font-mono">{remainingForFreeShipping.toLocaleString()} MMK</strong> for Free Shipping
               </span>
             )}
-          </span>
-          <span className="text-slate-500 font-bold">
+          </div>
+          <span className="text-[11px] font-mono font-bold text-slate-400">
             {Math.round(progressToFreeShipping)}%
           </span>
         </div>
-        <div className="w-full h-1.5 bg-slate-950 rounded-full overflow-hidden">
+
+        <div className="w-full h-1.5 bg-black/60 rounded-full overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-amber-500 to-amber-300 transition-all duration-500 rounded-full"
+            className="h-full bg-gradient-to-r from-amber-500 via-amber-400 to-[#FFC107] transition-all duration-500 rounded-full shadow-[0_0_8px_rgba(255,193,7,0.5)]"
             style={{ width: `${progressToFreeShipping}%` }}
           />
         </div>
       </div>
 
-      {/* Delivery Region Selector */}
+      {/* Sleek Segmented Control for Delivery Destination */}
       <div className="space-y-1.5">
-        <label className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">
-          Delivery Region
-        </label>
-        <div className="grid grid-cols-3 gap-1.5">
+        <div className="flex items-center justify-between text-[11px] text-slate-400">
+          <span className="uppercase font-bold tracking-wider">Destination</span>
+          <span className="font-mono text-slate-300">
+            {isFreeShipping ? "FREE" : city === "YGN" ? "2,500 Ks" : city === "MDY" ? "3,500 Ks" : "4,500 Ks"}
+          </span>
+        </div>
+
+        <div className="grid grid-cols-3 p-1 bg-black/60 rounded-lg border border-slate-800 gap-1">
           {(
             [
-              { key: "YGN", label: "Yangon", rate: "2,500 Ks" },
-              { key: "MDY", label: "Mandalay", rate: "3,500 Ks" },
-              { key: "OTHER", label: "Other States", rate: "4,500 Ks" },
+              { key: "YGN", label: "Yangon" },
+              { key: "MDY", label: "Mandalay" },
+              { key: "OTHER", label: "Other States" },
             ] as const
           ).map((item) => (
             <button
               key={item.key}
               type="button"
-              onClick={() => onCityChange(item.key)}
-              className={`p-2 rounded-lg border text-center transition-all ${
+              onClick={() => {
+                cyberAudio.playClick();
+                onCityChange(item.key);
+              }}
+              className={`py-1.5 text-xs font-bold rounded transition-all cursor-pointer ${
                 city === item.key
-                  ? "bg-amber-500/15 border-amber-500 text-amber-400 font-bold"
-                  : "bg-slate-900 border-slate-800 text-slate-400 hover:text-white"
+                  ? "bg-[#FFC107] text-black shadow-md"
+                  : "text-slate-400 hover:text-white"
               }`}
             >
-              <div className="text-[11px] font-bold">{item.label}</div>
-              <div className="text-[9px] font-mono text-slate-500">
-                {isFreeShipping ? "FREE" : item.rate}
-              </div>
+              {item.label}
             </button>
           ))}
         </div>
       </div>
 
-      {/* Financial Line Items */}
+      {/* Financial Breakdown */}
       <div className="space-y-1.5 text-xs text-slate-400 pt-1 font-mono">
         <div className="flex justify-between">
           <span>Subtotal</span>
@@ -122,43 +116,55 @@ export function CartSummary({
           </span>
         </div>
         {discount > 0 && (
-          <div className="flex justify-between text-amber-400">
-            <span>Voucher Discount</span>
+          <div className="flex justify-between text-amber-400 font-bold">
+            <span>Promo Discount</span>
             <span>-{discount.toLocaleString()} MMK</span>
           </div>
         )}
         <div className="flex justify-between">
-          <span>Estimated Shipping</span>
-          <span className={shippingCost === 0 ? "text-green-400 font-bold" : "text-white"}>
+          <span>Shipping</span>
+          <span className={shippingCost === 0 ? "text-emerald-400 font-bold" : "text-white"}>
             {shippingCost === 0 ? "FREE" : `${shippingCost.toLocaleString()} MMK`}
           </span>
         </div>
-        <div className="border-t border-slate-800 pt-2 flex justify-between items-baseline text-sm font-sans">
-          <span className="font-bold text-white uppercase tracking-wider font-['Rajdhani',sans-serif]">
+
+        <div className="border-t border-slate-800 pt-2.5 flex justify-between items-baseline">
+          <span className="text-sm font-bold text-white uppercase tracking-wider font-['Rajdhani',sans-serif]">
             Total Amount
           </span>
-          <span className="text-base font-black text-amber-400 font-mono">
+          <span className="text-lg font-black text-[#FFC107] font-mono">
             {grandTotal.toLocaleString()} MMK
           </span>
         </div>
       </div>
 
-      {/* Primary Checkout Action */}
+      {/* Primary Checkout Button */}
       <button
         type="button"
-        onClick={onProceedToCheckout}
+        onClick={() => {
+          cyberAudio.playClick();
+          onProceedToCheckout();
+        }}
         disabled={subtotal === 0}
-        className="w-full btn-scifi-primary py-3 text-sm flex items-center justify-center gap-2 group disabled:opacity-40"
+        className="w-full btn-scifi-primary !py-3.5 text-sm flex items-center justify-center gap-2 group disabled:opacity-40"
       >
         <span>PROCEED TO CHECKOUT</span>
         <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
       </button>
 
-      {/* Security Reassurance */}
-      <div className="flex items-center justify-center gap-1.5 text-[10px] text-slate-500 font-mono">
-        <ShieldCheck className="w-3.5 h-3.5 text-green-500" />
-        <span>100% SECURE DIRECT TEAM MERCHANDISE</span>
+      {/* Trust & Payment Channels Bar */}
+      <div className="flex items-center justify-center gap-4 text-[10px] text-slate-500 font-mono pt-1">
+        <div className="flex items-center gap-1">
+          <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+          <span>256-Bit SSL</span>
+        </div>
+        <span>•</span>
+        <div className="flex items-center gap-1">
+          <CreditCard className="w-3.5 h-3.5 text-amber-400" />
+          <span>KBZPay / WavePay / Cards</span>
+        </div>
       </div>
+
     </div>
   );
 }

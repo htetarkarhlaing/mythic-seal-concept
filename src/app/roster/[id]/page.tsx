@@ -179,19 +179,7 @@ export default async function PlayerDossierPage({ params }: PlayerPageProps) {
                     </div>
                   </div>
 
-                  <div>
-                    <span className="text-[11px] text-slate-400 font-bold uppercase block mb-2">SIGNATURE HERO POOL:</span>
-                    <div className="flex flex-wrap gap-2">
-                      {player.stats.signatureHeroes.map((hero) => (
-                        <span
-                          key={hero}
-                          className="px-2.5 py-1 text-xs font-bold text-slate-200 bg-slate-900 rounded border border-amber-500/30"
-                        >
-                          ⚔️ {hero}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
+
                 </div>
               )}
 

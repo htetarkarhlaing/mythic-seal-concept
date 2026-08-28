@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { Tag, CheckCircle, X } from "lucide-react";
+import { Tag, CheckCircle2, X } from "lucide-react";
+import { cyberAudio } from "@/lib/audioSynthesizer";
 
 interface CartPromoSectionProps {
   appliedPromo: string | null;
@@ -9,15 +10,6 @@ interface CartPromoSectionProps {
   onRemovePromo: () => void;
 }
 
-/**
- * CartPromoSection Component
- *
- * Provides promotional voucher redemption with instant visual validation.
- * Supported Codes:
- * - `KBZPAY10` (10% Discount)
- * - `SEAL2026` (15% Discount)
- * - `GLORY` (20% Discount)
- */
 export function CartPromoSection({
   appliedPromo,
   onApplyPromo,
@@ -33,38 +25,40 @@ export function CartPromoSection({
     const success = onApplyPromo(promoInput);
     if (!success) {
       setErrorMessage("Invalid promo code. Try SEAL2026 or KBZPAY10");
-      setTimeout(() => setErrorMessage(null), 3500);
+      setTimeout(() => setErrorMessage(null), 3000);
     } else {
+      cyberAudio.playSuccess();
       setPromoInput("");
       setErrorMessage(null);
     }
   };
 
   return (
-    <div className="p-4 border-t border-slate-800/80 bg-slate-950/40">
+    <div className="px-5 py-3 border-t border-slate-800/80 bg-[#050a1c]/60">
       {appliedPromo ? (
-        // Active Promo Display Badge
-        <div className="flex items-center justify-between p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400">
+        <div className="flex items-center justify-between p-2.5 rounded bg-amber-500/10 border border-amber-500/30 text-amber-300">
           <div className="flex items-center gap-2">
-            <CheckCircle className="w-4 h-4 text-amber-400 flex-shrink-0" />
+            <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
             <div className="text-xs font-mono">
               <span className="font-bold uppercase tracking-wider">
                 {appliedPromo}
               </span>{" "}
-              APPLIED
+              <span>APPLIED</span>
             </div>
           </div>
           <button
             type="button"
-            onClick={onRemovePromo}
+            onClick={() => {
+              cyberAudio.playClick();
+              onRemovePromo();
+            }}
             aria-label="Remove promo code"
-            className="p-1 hover:text-white rounded transition-colors"
+            className="p-1 text-slate-400 hover:text-white rounded transition-colors"
           >
             <X className="w-3.5 h-3.5" />
           </button>
         </div>
       ) : (
-        // Promo Code Form
         <form onSubmit={handleSubmit} className="space-y-1.5">
           <div className="flex gap-2">
             <div className="relative flex-1">
@@ -74,19 +68,19 @@ export function CartPromoSection({
                 placeholder="PROMO CODE (e.g. SEAL2026)"
                 value={promoInput}
                 onChange={(e) => setPromoInput(e.target.value.toUpperCase())}
-                className="w-full bg-slate-900 border border-slate-800 rounded-lg pl-9 pr-3 py-2 text-xs font-mono uppercase text-white placeholder:text-slate-600 focus:outline-none focus:border-amber-400 transition-colors"
+                className="w-full bg-[#081026] border border-slate-800 rounded pl-8 pr-3 py-2 text-xs font-mono uppercase text-white placeholder:text-slate-600 focus:outline-none focus:border-amber-400 transition-colors"
               />
             </div>
             <button
               type="submit"
               disabled={!promoInput.trim()}
-              className="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 disabled:opacity-40 text-amber-400 text-xs font-bold font-['Rajdhani',sans-serif] tracking-wider rounded-lg transition-colors"
+              className="px-4 py-2 bg-slate-800 hover:bg-slate-700 disabled:opacity-40 text-amber-400 text-xs font-bold uppercase tracking-wider rounded transition-colors cursor-pointer"
             >
               APPLY
             </button>
           </div>
           {errorMessage && (
-            <p className="text-[11px] text-red-400 font-sans pl-1">
+            <p className="text-[11px] text-red-400 pl-1 font-mono">
               {errorMessage}
             </p>
           )}
